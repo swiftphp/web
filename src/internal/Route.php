@@ -118,7 +118,7 @@ class Route implements IRoute,IConfigurable
     /**
      * 注入配置
      * {@inheritDoc}
-     * @see \swiftphp\core\config\IConfigurable::setConfiguration()
+     * @see \swiftphp\config\IConfigurable::setConfiguration()
      */
     public function setConfiguration(IConfiguration $value)
     {
@@ -128,7 +128,7 @@ class Route implements IRoute,IConfigurable
 
     /**
      * 获取配置实例
-     * @return \swiftphp\core\config\IConfiguration
+     * @return \swiftphp\config\IConfiguration
      */
     public function getConfiguration()
     {

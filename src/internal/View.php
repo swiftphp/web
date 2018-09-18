@@ -98,7 +98,7 @@ abstract class View implements IView, IConfigurable
 
     /**
      * 获取配置实例
-     * @return \swiftphp\core\config\IConfiguration
+     * @return \swiftphp\config\IConfiguration
      */
     public function getConfiguration()
     {
@@ -153,7 +153,7 @@ abstract class View implements IView, IConfigurable
 
     /**
      * 获取当前绑定的响应对象
-     * @return \swiftphp\core\http\Response
+     * @return \swiftphp\http\Response
      */
     public function getResponse()
     {

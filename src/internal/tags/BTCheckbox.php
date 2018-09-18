@@ -27,7 +27,7 @@ class BTCheckbox extends Checkbox
     /**
      * 实现父类getContent()抽象方法,取得控件呈现给客户端的内容
      * {@inheritDoc}
-     * @see \swiftphp\core\web\tags\TagBase::getContent()
+     * @see \swiftphp\web\tags\TagBase::getContent()
      */
     public function getContent(&$outputParams=[])
     {

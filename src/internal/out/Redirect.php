@@ -20,7 +20,7 @@ class Redirect extends Base
     /**
      *
      * {@inheritDoc}
-     * @see \swiftphp\core\web\out\Base::output()
+     * @see \swiftphp\web\out\Base::output()
      */
     public function output()
     {

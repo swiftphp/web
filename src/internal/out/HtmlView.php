@@ -26,7 +26,7 @@ class HtmlView extends View implements IOutput
      * 注册的标签库
      * @var array
      */
-    protected $m_taglibs=["php"=>"swiftphp\\core\\web\\internal\\tags"];
+    protected $m_taglibs=["php"=>"swiftphp\\web\\internal\\tags"];
 
     /**
      * 标签统计处理标记
@@ -49,7 +49,7 @@ class HtmlView extends View implements IOutput
     /**
      * 输出
      * {@inheritDoc}
-     * @see \swiftphp\core\http\IOutput::output()
+     * @see \swiftphp\http\IOutput::output()
      */
     public function output()
     {
@@ -211,7 +211,7 @@ class HtmlView extends View implements IOutput
         }
         $obj=new $class();
         if(!($obj instanceof ITag)){
-            throw new \Exception("Tag '".$attributes["_tag"]."' not implements swiftphp\core\\web\\ITag");
+            throw new \Exception("Tag '".$attributes["_tag"]."' not implements swiftphp\\web\\ITag");
         }
         $obj->setInnerHtml($innerHtml);
 
@@ -343,13 +343,13 @@ class HtmlView extends View implements IOutput
      */
     protected function loadView($view,$relDir,&$taglibs=[])
     {
-        //标签库:<taglib prefix="php" namespace="swiftphp\core\web\tags" />
+        //标签库:<taglib prefix="php" namespace="swiftphp\web\tags" />
         //模板标签:<page:template file="" />
         //部件标签:<page:part file="" />
         //占位标签:<page:contentHolder id="" />
         //内容标签:<page:content id="" />
 
-        //<taglib prefix="php" namespace="swiftphp\core\web\tags" />
+        //<taglib prefix="php" namespace="swiftphp\web\tags" />
         //读取标签库后,清空标签库标签
         $view=$this->loadTagLibs($view, $taglibs);
 
@@ -417,7 +417,7 @@ class HtmlView extends View implements IOutput
      */
     protected function loadTagLibs($view,&$taglibs)
     {
-        //<taglib prefix="php" namespace="swiftphp\core\web\tags" />
+        //<taglib prefix="php" namespace="swiftphp\web\tags" />
         //读取标签库后,清空标签库标签
         $pattern="/<taglib[^>]{1,}\/>/i";
         $matches=[];

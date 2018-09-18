@@ -20,7 +20,7 @@ class Json extends Base
     /**
      * 输出
      * {@inheritDoc}
-     * @see \swiftphp\core\http\IOutput::output()
+     * @see \swiftphp\http\IOutput::output()
      */
     public function output()
     {

@@ -167,7 +167,7 @@ class WebFilter implements IFilter,IConfigurable
 
     /**
      * 获取配置实例
-     * @return \swiftphp\core\config\IConfiguration
+     * @return IConfiguration
      */
     public function getConfiguration()
     {

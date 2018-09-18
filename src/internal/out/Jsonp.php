@@ -28,7 +28,7 @@ class Jsonp extends Base
     /**
      * 输出
      * {@inheritDoc}
-     * @see \swiftphp\core\web\out\Base::output()
+     * @see \swiftphp\web\out\Base::output()
      */
     public function output()
     {

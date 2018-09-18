@@ -131,7 +131,7 @@ class Controller implements IController,IConfigurable
 
     /**
      * 获取配置实例
-     * @return \swiftphp\core\config\IConfiguration
+     * @return \swiftphp\config\IConfiguration
      */
     public function getConfiguration()
     {
