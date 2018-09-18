@@ -1,0 +1,21 @@
+{
+	"name" : "swiftphp/web",
+	"description" : "SwiftPHP基于PHP5的快速的面向对象的PHP类库(WEB模块)",
+	"type" : "library",
+	"license" : "MIT",
+	"minimum-stability" : "dev",
+	"authors" : [{
+			"name" : "Tomix Chiu",
+			"email" : "qhr2001@yahoo.com"
+		}
+	],
+	"require" : {
+		"php" : ">=5.6.0",
+		"swiftphp/http" : "~1.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"swiftphp\\web\\" : "src"
+		}
+	}
+}
