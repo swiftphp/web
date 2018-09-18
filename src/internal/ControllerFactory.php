@@ -92,7 +92,7 @@ class ControllerFactory implements IControllerFactory,IConfigurable
 
         //implement IController
         if(!($controller instanceof IController)){
-            throw new \Exception("'".$controllerClass."' controller does not implement interface 'swiftphp\\core\\web\\IController'");
+            throw new \Exception("'".$controllerClass."' controller does not implement interface 'swiftphp\\web\\IController'");
         }
 
         //return
