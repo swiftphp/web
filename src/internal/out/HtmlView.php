@@ -349,15 +349,15 @@ class HtmlView extends View implements IOutput
         //占位标签:<page:contentHolder id="" />
         //内容标签:<page:content id="" />
 
-        //<taglib prefix="php" namespace="swiftphp\web\tags" />
-        //读取标签库后,清空标签库标签
-        $view=$this->loadTagLibs($view, $taglibs);
-
         //模板标签:<page:template file="" />;一个视图最多只存在一个模板
         $view=$this->loadTemplate($view, $relDir);
 
         //部件标签:<page:part file="" />
         $view=$this->loadParts($view, $relDir);
+
+        //<taglib prefix="php" namespace="swiftphp\web\tags" />
+        //读取标签库后,清空标签库标签
+        $view=$this->loadTagLibs($view, $taglibs);
 
         //标签预处理.单标签转为双标签;用占位符统一标记为通用的标签前缀
         $view=$this->preloadTags($view, $taglibs);
