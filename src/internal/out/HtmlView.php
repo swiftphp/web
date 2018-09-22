@@ -20,7 +20,7 @@ class HtmlView extends View implements IOutput
      * 默认模板基本目录
      * @var string
      */
-    protected $m_defaultViewDir = "views";
+    protected $m_defaultViewDir="views";
 
     /**
      * 注册的标签库
