@@ -33,5 +33,11 @@ interface ITag
      * @param string $name
      */
     function removeAttribute($name);
+
+    /**
+     * 设置变量表达式前缀
+     * @param string $value
+     */
+    function setVarPrefix($value);
 }
 

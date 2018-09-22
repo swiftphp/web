@@ -172,8 +172,11 @@ class Iterator extends TagBase
                 $_template=str_replace($child["outerHtml"], $childTemplate, $_template);
             }
 
+            //内置#号表达式
             $_template=$this->buildTemplateRow($_template, $line, "/#{[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$outParams);
-            $_template=$this->buildTemplateRow($_template, $line, "/\\\${[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$outParams);
+
+            //系统表达式
+            $_template=$this->buildTemplateRow($_template, $line, "/\\\${".$this->getVarPrefix().":[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$outParams);
 
             //状态信息行
             if(!empty($this->status)){
@@ -272,7 +275,7 @@ class Iterator extends TagBase
                         $key=uniqid()."-".$paramKey;//唯一key
                         $outParams[$key]=$value;
                         //转为${key}表达式的全局参数
-                        $template=str_replace($search, "\${".$key."}", $template);
+                        $template=str_replace($search, "\${".$this->getVarPrefix().":".$key."}", $template);
                     }else if(is_numeric($value)||is_string($value)||is_bool($value)){
                         //数字或字符串,替换
                         $template=str_replace($search, $value, $template);

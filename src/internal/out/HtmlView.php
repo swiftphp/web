@@ -20,7 +20,7 @@ class HtmlView extends View implements IOutput
      * 默认模板基本目录
      * @var string
      */
-    protected $m_defaultViewDir="views";
+    protected $m_defaultViewDir="views";/////////////////////
 
     /**
      * 注册的标签库
@@ -45,6 +45,12 @@ class HtmlView extends View implements IOutput
      * @var array
      */
     private $m_onlyViewParams=[];
+
+    /**
+     * 变量表达式前缀
+     * @var string
+     */
+    private $m_varPrefix="";
 
     /**
      * 输出
@@ -78,8 +84,10 @@ class HtmlView extends View implements IOutput
         $view=StringUtil::removeUtf8Bom($view);
 
         //合并视图的模板与部件,预处理标签
-        $viewCacheFile=$this->m_runtimeDir."/".md5($view);
-        $tagLibInfoCacheFile=$this->m_runtimeDir."/".md5(md5(md5($view)));
+        $md5Key=md5($view);
+        $this->m_varPrefix=$md5Key;
+        $viewCacheFile=$this->m_runtimeDir."/".$md5Key;
+        $tagLibInfoCacheFile=$this->m_runtimeDir."/".md5($md5Key);
         if(!$this->m_debug && file_exists($viewCacheFile)){
             //从缓存文件读取
             $view=file_get_contents($viewCacheFile);
@@ -119,7 +127,7 @@ class HtmlView extends View implements IOutput
         $view=$this->loadParams($view);
 
         //清除空参数与标签
-        $view=preg_replace("/\\\${[^}]*}/","",$view);
+        $view=preg_replace("/\\\$\{".$this->m_varPrefix.":[^}]*\}/U","",$view);
 
         return $view;
     }
@@ -214,6 +222,7 @@ class HtmlView extends View implements IOutput
             throw new \Exception("Tag '".$attributes["_tag"]."' not implements swiftphp\\web\\ITag");
         }
         $obj->setInnerHtml($innerHtml);
+        $obj->setVarPrefix($this->m_varPrefix);
 
         //注入标签属性
         foreach ($attributes as $name=>$value){
@@ -229,7 +238,7 @@ class HtmlView extends View implements IOutput
             }
             //匹配动态参数(可以匹配多个参数)
             $matches=[];
-            if(preg_match_all("/\\\${[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$value,$matches)){
+            if(preg_match_all("/\\\$\{".$this->m_varPrefix.":([^\s]{1,})\}/U",$value,$matches)){
                 $holders=$matches[0];
                 $keys=$matches[1];
                 for($i=0;$i<count($keys);$i++){
@@ -308,8 +317,8 @@ class HtmlView extends View implements IOutput
 
             //替换占位符(非空&&值类型||空字符串)
             if((!is_array($value) && !is_object($value))){
-                $value=str_replace("$", "\\\$", $value);
-                $view=preg_replace("/\\\${[\s]{0,}".$param."[\s]{0,}}/",$value,$view);
+                //$value=str_replace("$", "\\\$", $value);
+                $view=preg_replace("/\\\$\{".$this->m_varPrefix.":".$param."\}/",$value,$view);
             }
         }
         return $view;
@@ -322,11 +331,13 @@ class HtmlView extends View implements IOutput
     protected function preLoadViewParams($view)
     {
         $pattern="/\\\${([^}]{1,})}/";
+        $pattern="/\\\$\{".$this->m_varPrefix.":([^\}\s]{1,})\}/U";
         $matches=[];
         preg_match_all($pattern, $view,$matches);
         $params=[];
         if(count($matches)>0){
             foreach ($matches[1] as $param){
+                $param=trim($param);
                 if(!in_array($param, $params)){
                     $params[]=$param;
                 }
@@ -361,6 +372,20 @@ class HtmlView extends View implements IOutput
 
         //标签预处理.单标签转为双标签;用占位符统一标记为通用的标签前缀
         $view=$this->preloadTags($view, $taglibs);
+
+        //保存转义表达式
+        $search="\\\${";
+        $replace=uniqid();
+        $view=str_replace($search, $replace, $view);
+
+        //表达式前缀
+        $pattern="/\\\$\{[\s]{0,}([^\}\s]{1,})[\s]{0,}\}/U";
+        $view=preg_replace($pattern, "\${".$this->m_varPrefix.":\$1}", $view);
+
+        //恢复转义表达式
+        $search=$replace;
+        $replace="\${";
+        $view=str_replace($search, $replace, $view);
 
         return $view;
     }

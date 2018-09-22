@@ -23,6 +23,12 @@ abstract class TagBase implements ITag
     private $m_attributes=[];
 
     /**
+     * 变量表达式前缀
+     * @var string
+     */
+    private $m_varPrefix="";
+
+    /**
      * 内部html
      * @return string
      */
@@ -38,6 +44,14 @@ abstract class TagBase implements ITag
     protected function getAttributes()
     {
         return $this->m_attributes;
+    }
+
+    /**
+     * 变量表达式前缀
+     */
+    protected function getVarPrefix()
+    {
+        return $this->m_varPrefix;
     }
 
     /**
@@ -79,6 +93,15 @@ abstract class TagBase implements ITag
         if(array_key_exists($name, $this->m_attributes)){
             unset($this->m_attributes[$name]);
         }
+    }
+
+    /**
+     * 设置变量表达式前缀
+     * @param string $value
+     */
+    public function setVarPrefix($value)
+    {
+        $this->m_varPrefix=$value;
     }
 }
 
