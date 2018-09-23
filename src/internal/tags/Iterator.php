@@ -232,7 +232,7 @@ class Iterator extends TagBase
             $key=array_key_exists("parent", $childAttr)?$childAttr["parent"]:"";
         }
         $key=str_replace("#{", "", $key);
-        $key=str_replace("\${", "", $key);
+        $key=str_replace("\${".$this->getVarPrefix().":", "", $key);
         $key=str_replace("}", "", $key);
         $key=trim($key);
         $value=null;
