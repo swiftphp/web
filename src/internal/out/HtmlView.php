@@ -360,15 +360,15 @@ class HtmlView extends View implements IOutput
         //占位标签:<page:contentHolder id="" />
         //内容标签:<page:content id="" />
 
-        //<taglib prefix="php" namespace="swiftphp\web\tags" />
-        //读取标签库后,清空标签库标签
-        $view=$this->loadTagLibs($view, $taglibs);
-
         //模板标签:<page:template file="" />;一个视图最多只存在一个模板
         $view=$this->loadTemplate($view, $relDir,$taglibs);
 
         //部件标签:<page:part file="" />
         $view=$this->loadParts($view, $relDir);
+
+        //<taglib prefix="php" namespace="swiftphp\web\tags" />
+        //读取标签库后,清空标签库标签
+        $view=$this->loadTagLibs($view, $taglibs);
 
         //标签预处理.单标签转为双标签;用占位符统一标记为通用的标签前缀
         $view=$this->preloadTags($view, $taglibs);
@@ -509,15 +509,22 @@ class HtmlView extends View implements IOutput
             $tpls=$matches[1];
             for($i=0;$i<count($parts);$i++){
                 $part=$parts[$i];
-                $tpl=$tpls[$i];
-                $tpl=$relDir."/".$tpl;
+                $tplFile=$tpls[$i];
+                $tplFile=$relDir."/".$tplFile;
 
+                //部件内容
                 $tplHtml="";
-                if(file_exists($tpl) && is_file($tpl)){
-                    $tplHtml=file_get_contents($tpl);
+                if(file_exists($tplFile) && is_file($tplFile)){
+                    $tplHtml=file_get_contents($tplFile);
                 }
                 $tplHtml=StringUtil::removeUtf8Bom($tplHtml);
                 //$tplHtml=$this->applyView($tplHtml);
+
+                //递归合并部件模板的部件
+                $dir=dirname($tplFile);
+                $tplHtml=$this->loadParts($tplHtml, $dir);
+
+                //合并部件到模板
                 $view=str_replace($part, $tplHtml, $view);
             }
         }
