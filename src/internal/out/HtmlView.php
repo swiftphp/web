@@ -473,6 +473,10 @@ class HtmlView extends View implements IOutput
         $pattern="/<page:template[^>]{1,}file[\s]*=[\s]*[\"|\']([^\s<>\"\']{1,})[\"|\'][^>]*>/i";
         $matches=[];
         if(preg_match($pattern,$view,$matches)>0){
+            //有母板的视图需要预先加载标签库
+            $view=$this->loadTagLibs($view, $taglibs);
+
+            //搜索文件
             $templateFile=$matches[1];
             $templateFile=$relDir."/".$templateFile;
             if(!file_exists($templateFile) || !is_file($templateFile)){
