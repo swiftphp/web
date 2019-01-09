@@ -38,19 +38,38 @@ class HtmlView extends View implements IOutput
      * 输出内容
      * @var string
      */
-    private $m_outputContent="";
+    protected $m_outputContent="";
 
     /**
      * 模板需要的参数
      * @var array
      */
-    private $m_onlyViewParams=[];
+    protected $m_onlyViewParams=[];
 
     /**
      * 变量表达式前缀
      * @var string
      */
-    private $m_varPrefix="";
+    protected $m_varPrefix="";
+
+    /**
+     * 是否启用视图php脚本
+     * @var bool
+     */
+    protected $m_phpEnable=true;
+
+    /**
+     * 设置是否启用视图php脚本
+     * @param bool $value
+     */
+    public function setPhpEnable($value)
+    {
+        if($value=="1"||strtolower($value)=="true"){
+            $this->m_phpEnable=true;
+        }else if($value=="0" || strtolower($value)=="false"){
+            $this->m_phpEnable=false;
+        }
+    }
 
     /**
      * 输出
@@ -59,15 +78,21 @@ class HtmlView extends View implements IOutput
      */
     public function output()
     {
+        //渲染后的视图
         if(empty($this->m_outputContent)){
             $this->m_outputContent=$this->getContent();
         }
-        $content=$this->m_outputContent;
-        $cacheFile=$this->getRuntimeDir()."/".md5($content);
-        if(!file_exists($cacheFile)){
-            file_put_contents($cacheFile, $content);
+
+        //根据是否启用视图php脚本判断输出
+        if($this->m_phpEnable){
+            $cacheFile=$this->getRuntimeDir()."/".md5($this->m_outputContent);
+            if(!file_exists($cacheFile)){
+                file_put_contents($cacheFile, $this->m_outputContent);
+            }
+            require_once $cacheFile;
+        }else{
+            echo $this->m_outputContent;
         }
-        require_once $cacheFile;
     }
 
     /**
@@ -87,7 +112,10 @@ class HtmlView extends View implements IOutput
         $md5Key=md5($view);
         $this->m_varPrefix=$md5Key;
         $viewCacheFile=$this->m_runtimeDir."/".$md5Key;
-        $tagLibInfoCacheFile=$this->m_runtimeDir."/".md5($md5Key);
+        $md5KeyKey=md5($md5Key);
+        $tagLibInfoCacheFile=$this->m_runtimeDir."/".$md5KeyKey;
+        $paramCacheFile=$this->m_runtimeDir."/".md5($md5KeyKey);
+        $customParams=[];
         if(!$this->m_debug && file_exists($viewCacheFile)){
             //从缓存文件读取
             $view=file_get_contents($viewCacheFile);
@@ -95,12 +123,24 @@ class HtmlView extends View implements IOutput
             if(file_exists($tagLibInfoCacheFile)){
                 $this->m_taglibs=unserialize(file_get_contents($tagLibInfoCacheFile));
             }
-
+            //定制参数
+            if(file_exists($paramCacheFile)){
+                $customParams=unserialize(file_get_contents($paramCacheFile));
+            }
         }else{
             //重新处理,并写到缓存文件
-            $view=$this->loadView($view,dirname($viewFile),$this->m_taglibs);
+            $view=$this->loadView($view,dirname($viewFile),$this->m_taglibs,$customParams);
             file_put_contents($viewCacheFile, $view);
             file_put_contents($tagLibInfoCacheFile, serialize($this->m_taglibs));
+            file_put_contents($paramCacheFile, serialize($customParams));
+        }
+
+        //定制参数通过setter注入当前实例(原始注入,类型转换需要setter实现)
+        foreach ($customParams as $name => $value){
+            $setter="set".ucfirst($name);
+            if(method_exists($this, $setter)){
+                $this->$setter($value);
+            }
         }
 
         //替换参数与标签
@@ -351,14 +391,31 @@ class HtmlView extends View implements IOutput
      * @param string $view           视图内容
      * @param string $relDir         视图相对目录
      * @param array  $taglibs        视图用到的标签解析库,键为前缀,值为命名空间
+     * @param array  $customParams   视图通过标签实现的定制参数
      */
-    protected function loadView($view,$relDir,&$taglibs=[])
+    protected function loadView($view,$relDir,&$taglibs=[],&$customParams=[])
     {
+        //定制参数:<page:param name="key" value="value"/>
         //标签库:<taglib prefix="php" namespace="swiftphp\web\tags" />
         //模板标签:<page:template file="" />
         //部件标签:<page:part file="" />
         //占位标签:<page:contentHolder id="" />
         //内容标签:<page:content id="" />
+
+        //读取页面定制参数标签:<page:param name="key" value="value"/>
+        //定制参数只能在主视图
+        $matches=[];
+        $pattern="/<page:param[\s]{1,}name[\s]*=[\s]*[\"|\']([^\s<>\"\']{1,})[\"|\'][\s]{1,}value[\s]*=[\s]*[\"|\']([^\s<>\"\']{1,})[\"|\'][^>]*>/i";
+        if(preg_match_all($pattern, $view,$matches)>0){
+            $holders=$matches[0];
+            $keys=$matches[1];
+            $values=$matches[2];
+            for($i=0;$i<count($holders);$i++){
+                $customParams[$keys[$i]]=$values[$i];
+            }
+        }
+        //清空定制参数标签
+        $view=preg_replace($pattern, "", $view);
 
         //模板标签:<page:template file="" />;一个视图最多只存在一个模板
         $view=$this->loadTemplate($view, $relDir,$taglibs);
