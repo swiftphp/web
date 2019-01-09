@@ -106,14 +106,6 @@ class ControllerFactory implements IControllerFactory,IConfigurable
      */
     private function configController($controller)
     {
-        //注入全局配置(值类型)
-        if(!is_null($this->m_config)){
-            $globalConfig=$this->m_config->getConfigValues(BuiltInConst::GLOBAL_CONFIG_SESSION);
-            foreach ($globalConfig as $name => $value){
-                ObjectUtil::setPropertyValue($controller, $name, $value);
-            }
-        }
-
         //注入初始化属性
         if(!empty($this->m_controllerProperties)){
             foreach ($this->m_controllerProperties as $name => $value){
