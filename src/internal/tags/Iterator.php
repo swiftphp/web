@@ -173,10 +173,10 @@ class Iterator extends TagBase
             }
 
             //内置#号表达式
-            $_template=$this->buildTemplateRow($_template, $line, "/#{[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$outParams);
+            $_template=$this->buildTemplateRow($_template, $line, "/#\{[\s]{0,}([^\s]{1,})[\s]{0,}\}/isU", $outParams);
 
             //系统表达式
-            $_template=$this->buildTemplateRow($_template, $line, "/\\\${".$this->getVarPrefix().":[\s]{0,}([^\s]{1,})[\s]{0,}}/isU",$outParams);
+            $_template=$this->buildTemplateRow($_template, $line, "/\\\$\{".$this->getVarPrefix().":[\s]{0,}([^\s]{1,})[\s]{0,}\}/isU",$outParams);
 
             //状态信息行
             if(!empty($this->status)){
