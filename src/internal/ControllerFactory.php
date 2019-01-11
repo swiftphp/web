@@ -5,7 +5,6 @@ use swiftphp\config\IConfigurable;
 use swiftphp\config\IConfiguration;
 use swiftphp\web\IControllerFactory;
 use swiftphp\common\util\ObjectUtil;
-use swiftphp\common\BuiltInConst;
 use swiftphp\web\IController;
 
 /**
