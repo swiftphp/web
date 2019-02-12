@@ -358,7 +358,10 @@ class HtmlView extends View implements IOutput
             //替换占位符(非空&&值类型||空字符串)
             if((!is_array($value) && !is_object($value))){
                 //$value=str_replace("$", "\\\$", $value);
-                $view=preg_replace("/\\\$\{".$this->m_varPrefix.":".$param."\}/",$value,$view);
+                //$view=preg_replace("/\\\$\{".$this->m_varPrefix.":".$param."\}/",$value,$view);//<原代码>
+
+                //Modified@2019/2/12,修改页面无法输出美元符号的问题; 如果修改后出现其它BUG,则撤回此修改,使用<原代码>标签的语句
+                $view=str_replace("\${".$this->m_varPrefix.":".$param."}",$value, $view);
             }
         }
         return $view;
