@@ -302,7 +302,7 @@ class Select extends ListItemTagBase
                 $item["value"]=Convert::getFieldValue($obj, $this->m_valueField,true);
                 $item["text"]=$sep.Convert::getFieldValue($obj, $this->m_textField,true);
                 $items[]=$item;
-                unset($data[$i]);
+                //unset($data[$i]);
 
                 //取得所有子选项
                 $idValue=Convert::getFieldValue($obj, $this->m_idField,true);
