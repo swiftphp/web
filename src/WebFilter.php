@@ -198,11 +198,16 @@ class WebFilter implements IFilter,IConfigurable
                 $this->m_viewEngine->setConfiguration($this->m_config);
             }
 
+            //路由
+            if(empty($this->m_route)){
+                throw new \Exception("No route instance set to current filter");
+            }
+
             //控制器工厂
             $controllerFactory=$this->getControllerFactory();
 
             //创建控制器实例
-            $controller = $controllerFactory->create($this->getRoute()->getControllerName());
+            $controller = $controllerFactory->create($this->m_route->getControllerName());
 
             //注入控制器属性
             $controller->setContext($context);
@@ -211,13 +216,13 @@ class WebFilter implements IFilter,IConfigurable
             $controller->setDebug($this->m_debug);
 
             //注入控制器属性(路由)
-            $controller->setAreaName($this->getRoute()->getAreaName());
-            $controller->setAreaPrefix($this->getRoute()->getAreaPrefix());
-            $controller->setViewFile($this->getRoute()->getViewFile());
-            $controller->setInitParams($this->getRoute()->getInitParams());
+            $controller->setAreaName($this->m_route->getAreaName());
+            $controller->setAreaPrefix($this->m_route->getAreaPrefix());
+            $controller->setViewFile($this->m_route->getViewFile());
+            $controller->setInitParams($this->m_route->getInitParams());
 
             //激活控制器方法后，返回一个IOutput代理对象，并让response的输出代理指向该对象
-            $model = $controller->invoke($this->getRoute()->getActionName());
+            $model = $controller->invoke($this->m_route->getActionName());
             if(!empty($model)){
                 if($model instanceof IOutput){
                     $context->getResponse()->setOutput($model);
