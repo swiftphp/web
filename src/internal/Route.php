@@ -228,9 +228,9 @@ class Route implements IRoute,IConfigurable
                     //replace matches
                     for($index = 1;$index < count($matches);$index++){
                         $match=$matches[$index];
-                        if(empty($match)){
-                            continue;
-                        }
+                        //if(empty($match)){
+                        //    continue;
+                        //}
                         //转为驼峰命名法,首字母大小写不变
                         $first=substr($match, 0,1);
                         $_match=StringUtil::toHumpString($match);
