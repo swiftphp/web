@@ -18,7 +18,7 @@ use Twig\TwigFunction;
 use swiftphp\web\twig\functions\Pagination;
 use swiftphp\web\twig\filters\NumberFormat;
 
-class TwigView implements IView, IOutput,IConfigurable
+class View implements IView, IOutput,IConfigurable
 {
     /**
      * 默认扩展过滤器
