@@ -460,4 +460,3 @@ class TwigView implements IView, IOutput,IConfigurable
         return $compress;
     }
 }
-
