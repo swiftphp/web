@@ -409,7 +409,7 @@ class View implements IView, IOutput,IConfigurable
      * @param unknown $html_source
      * @return string|mixed
      */
-    function compressHtml($html_source)
+    private function compressHtml($html_source)
     {
         $chunks   = preg_split('/(<!--<nocompress>-->.*?<!--<\/nocompress>-->|<nocompress>.*?<\/nocompress>|<pre.*?\/pre>|<textarea.*?\/textarea>|<script.*?\/script>)/msi', $html_source, -1, PREG_SPLIT_DELIM_CAPTURE);
         $compress = '';
