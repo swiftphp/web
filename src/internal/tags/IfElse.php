@@ -43,7 +43,13 @@ class IfElse extends TagBase
         $exp=htmlspecialchars_decode($this->m_exp);
         if(!empty($this->m_exp)){
             $code="if(".$exp.") return true;else return false;";
-            $compare=eval($code);
+            try{
+                $compare=eval($code);
+            }catch (\Exception $e){
+                return "";
+            }catch (\Error $e){
+                return "";
+            }
         }
 
         if($compare){
