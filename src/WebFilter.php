@@ -18,13 +18,24 @@ use swiftphp\web\internal\out\Base;
  *
  */
 class WebFilter implements IFilter,IConfigurable
-{
+{    
+    /**
+     * 是否调试模式(此属性会传递给控制器)
+     * @var string
+     */
+    private $m_debug=false;
 
     /**
-     * 运行时缓存目录
+     * 运行时缓存目录(此属性会传递给控制器)
      * @var string
      */
     private $m_runtimeDir;
+    
+    /**
+     * 视图引擎(此属性会传递给控制器)
+     * @var IView
+     */
+    private $m_viewEngine;
 
     /**
      * 路由实例
@@ -33,22 +44,10 @@ class WebFilter implements IFilter,IConfigurable
     private $m_route;
 
     /**
-     * 视图引擎
-     * @var IView
-     */
-    private $m_viewEngine;
-
-    /**
      * 配置实例
      * @var IConfiguration
      */
     private $m_config;
-
-    /**
-     * 是否调试模式
-     * @var string
-     */
-    private $m_debug=false;
 
     /**
      * 控制器工厂
