@@ -436,13 +436,13 @@ class Controller implements IController,IConfigurable
         if(empty($this->m_viewEngine)){
             $this->m_viewEngine=new HtmlView();
             $this->m_viewEngine->setConfiguration($this->m_config);
+            $this->m_viewEngine->setDebug($this->m_debug);
+            $this->m_viewEngine->setRuntimeDir($this->getRuntimeDir());
         }
         $this->m_viewEngine->setContext($this->m_context);
         $this->m_viewEngine->setTagParams($this->m_tagParams);
         $this->m_viewEngine->setViewParams($this->m_viewParams);
         $this->m_viewEngine->setController($this);
-        $this->m_viewEngine->setDebug($this->m_debug);
-        $this->m_viewEngine->setRuntimeDir($this->getRuntimeDir());
         $this->m_viewEngine->setViewFile($viewFile);
         return $this->m_viewEngine;
     }
