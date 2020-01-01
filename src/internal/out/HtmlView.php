@@ -87,6 +87,9 @@ class HtmlView extends View implements IOutput
         if($this->m_phpEnable){
             $cacheFile=$this->getRuntimeDir()."/".md5($this->m_outputContent);
             if(!file_exists($cacheFile)){
+                if(!file_exists($this->getRuntimeDir())){
+                    mkdir($this->getRuntimeDir(),755);
+                }
                 file_put_contents($cacheFile, $this->m_outputContent);
             }
             require_once $cacheFile;
@@ -111,10 +114,10 @@ class HtmlView extends View implements IOutput
         //合并视图的模板与部件,预处理标签
         $md5Key=md5($view);
         $this->m_varPrefix=$md5Key;
-        $viewCacheFile=$this->m_runtimeDir."/".$md5Key;
+        $viewCacheFile=$this->getRuntimeDir()."/".$md5Key;
         $md5KeyKey=md5($md5Key);
-        $tagLibInfoCacheFile=$this->m_runtimeDir."/".$md5KeyKey;
-        $paramCacheFile=$this->m_runtimeDir."/".md5($md5KeyKey);
+        $tagLibInfoCacheFile=$this->getRuntimeDir()."/".$md5KeyKey;
+        $paramCacheFile=$this->getRuntimeDir()."/".md5($md5KeyKey);
         $customParams=[];
         if(!$this->m_debug && file_exists($viewCacheFile)){
             //从缓存文件读取
@@ -129,7 +132,10 @@ class HtmlView extends View implements IOutput
             }
         }else{
             //重新处理,并写到缓存文件
-            $view=$this->loadView($view,dirname($viewFile),$this->m_taglibs,$customParams);
+            $view=$this->loadView($view,dirname($viewFile),$this->m_taglibs,$customParams);            
+            if(!file_exists($this->getRuntimeDir())){
+                mkdir($this->getRuntimeDir(),755);
+            }
             file_put_contents($viewCacheFile, $view);
             file_put_contents($tagLibInfoCacheFile, serialize($this->m_taglibs));
             file_put_contents($paramCacheFile, serialize($customParams));
